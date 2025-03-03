@@ -25,19 +25,48 @@ class XenosInvasion:
     def run_game(self):
 
         while True:
+            self.check_events()
+            self.ship.update()
+            self.update_screen()
 
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    sys.exit()
-
-            self.screen.fill(self.settings.bg_colour)
-            self.ship.blitme()
-
-            pg.display.flip()
             self.clock.tick(60)
 
         # Hydra Dominatus!
 
+    def _check_events(self):
+
+        for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    sys.exit()
+
+                # Movement events
+                elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RIGHT:
+                        self.ship.moving_right = True
+                    elif event.key == pg.K_LEFT:
+                        self.ship.moving_left = True
+
+                elif event.type == pg.KEYUP:
+                    if event.key == pg.K_RIGHT:
+                        self.ship.moving_right = False
+                    elif event.key == pg.K_LEFT:
+                        self.ship.moving_left = False
+
+        # Hydra Dominatus!
+
+    def _update_screen(self):
+         
+        self.screen.fill(self.settings.bg_colour)
+        self.ship.blitme()
+
+        pg.display.flip()
+
+        # Hydra Dominatus!
+         
+
 if __name__ == '__main__':
+
     xi = XenosInvasion()
     xi.run_game()
+
+    # Hydra Dominatus!
