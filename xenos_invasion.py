@@ -4,6 +4,7 @@ import pygame as pg
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 class XenosInvasion:
 
@@ -20,6 +21,9 @@ class XenosInvasion:
 
         self.ship = Ship(self)
         self.bullets = pg.sprite.Group()
+        self.aliens = pg.sprite.Group()
+
+        self._create_fleet()
 
         self.bg_colour = (230, 230, 230)
 
@@ -72,6 +76,26 @@ class XenosInvasion:
         elif event.key == pg.K_DOWN:
             self.ship.moving_down = False
 
+    def _create_fleet(self):
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+
+        current_x, current_y = alien_width, alien_height
+        while current_y < (self.settings.screen_height - 3 * alien_height):
+            while current_x < (self.settings.screen_width - 2 * alien_width):
+                self._create_alien(current_x, current_y)
+                current_x += 2 * alien_width
+
+            current_x = alien_width
+            current_y += 2 * alien_height
+
+    def _create_alien(self, x_position, y_position):
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+        new_alien.rect.y = y_position
+        self.aliens.add(new_alien)
+
     def _fire_bullet(self):
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
@@ -91,6 +115,7 @@ class XenosInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
+        self.aliens.draw(self.screen)
 
         pg.display.flip()
 
