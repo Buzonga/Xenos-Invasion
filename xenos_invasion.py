@@ -1,10 +1,12 @@
 import sys
 import pygame as pg
+from time import sleep
 
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 class XenosInvasion:
 
@@ -19,6 +21,8 @@ class XenosInvasion:
         self.settings.screen_height = self.screen.get_rect().height
         pg.display.set_caption("Xenos Invasion")
 
+        self.stats = GameStats(self)
+
         self.ship = Ship(self)
         self.bullets = pg.sprite.Group()
         self.aliens = pg.sprite.Group()
@@ -27,15 +31,21 @@ class XenosInvasion:
 
         self.bg_colour = (230, 230, 230)
 
+        self.game_active = True
+
         # Hydra Dominatus!
 
     def run_game(self):
 
         while True:
+
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+                
             self._update_screen()
             self.clock.tick(60)
 
@@ -113,6 +123,11 @@ class XenosInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        if pg.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship hit!!!")
+
+        self._check_aliens_bottom()
+
     def _fire_bullet(self):
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
@@ -126,6 +141,34 @@ class XenosInvasion:
                 if bullet.rect.bottom <= 0:
                     self.bullets.remove(bullet)
 
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+
+        collisions = pg.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        if not self.aliens:
+            self._ship_hit()
+
+    def _check_aliens_bottom(self):
+
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                self._ship_hit()
+                break
+    
+    def _ship_hit(self):
+        if self.stats.ships_left > 0:
+            self.stats.ships_left -= 1
+
+            self.bullets.empty()
+            self.aliens.empty()
+
+            self._create_fleet
+            self.ship.center_ship()
+        else:
+            self.game_active = False
+
+        sleep(0.5)
 
     def _update_screen(self):
          
