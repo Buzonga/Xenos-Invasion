@@ -7,6 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
+from button import Button
 
 class XenosInvasion:
 
@@ -31,7 +32,9 @@ class XenosInvasion:
 
         self.bg_colour = (230, 230, 230)
 
-        self.game_active = True
+        self.game_active = False
+
+        self.play_button = Button(self, "Play")
 
         # Hydra Dominatus!
 
@@ -56,12 +59,40 @@ class XenosInvasion:
         for event in pg.event.get():
                 if event.type == pg.QUIT:
                     sys.exit()
+                elif event.type == pg.MOUSEBUTTONDOWN:
+                    mouse_pos = pg.mouse.get_pos()
+                    self._check_play_button(mouse_pos)
+                elif event.type == pg.K_p:
+                    self._check_keydown_events(event)
                 elif event.type == pg.KEYDOWN:
                     self._check_keydown_events(event)
                 elif event.type == pg.KEYUP:
                     self._check_keyup_events(event)
 
         # Hydra Dominatus!
+
+
+    def _check_play_button(self, mouse_pos):
+
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+
+        if  button_clicked and not self.game_active:
+
+            self._start()
+
+    def _start(self):
+
+        pg.mouse.set_visible(False)
+
+        self.stats.reset_stats()
+        self.game_active = True
+
+        self.bullets.empty()
+        self.aliens.empty()
+            
+        self._create_fleet()
+        self.ship.center_ship()
+            
 
     def _check_keydown_events(self, event):
         if event.key == pg.K_RIGHT:
@@ -74,6 +105,8 @@ class XenosInvasion:
             self.ship.moving_down = True
         elif event.key == pg.K_SPACE:
             self._fire_bullet()
+        elif event.key == pg.K_p:
+            self._start()
         elif event.key == pg.K_q:
             sys.exit()
 
@@ -157,7 +190,9 @@ class XenosInvasion:
                 break
     
     def _ship_hit(self):
+
         if self.stats.ships_left > 0:
+
             self.stats.ships_left -= 1
 
             self.bullets.empty()
@@ -166,7 +201,9 @@ class XenosInvasion:
             self._create_fleet()
             self.ship.center_ship()
         else:
+
             self.game_active = False
+            pg.mouse.set_visible(True)
 
         sleep(0.5)
 
@@ -177,6 +214,9 @@ class XenosInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+
+        if not self.game_active:
+            self.play_button.draw_button()
 
         pg.display.flip()
 
