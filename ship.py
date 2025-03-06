@@ -25,6 +25,7 @@ class Ship():
 
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
 
     def update(self):
 

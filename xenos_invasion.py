@@ -124,7 +124,7 @@ class XenosInvasion:
         self.aliens.update()
 
         if pg.sprite.spritecollideany(self.ship, self.aliens):
-            print("Ship hit!!!")
+            self._ship_hit()
 
         self._check_aliens_bottom()
 
@@ -163,7 +163,7 @@ class XenosInvasion:
             self.bullets.empty()
             self.aliens.empty()
 
-            self._create_fleet
+            self._create_fleet()
             self.ship.center_ship()
         else:
             self.game_active = False
