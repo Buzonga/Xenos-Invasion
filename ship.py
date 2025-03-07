@@ -1,9 +1,9 @@
 import pygame as pg
 
+
 class Ship():
 
     def __init__(self, xi_game):
-        
         self.screen = xi_game.screen
         self.settings = xi_game.settings
         self.screen_rect = xi_game.screen.get_rect()
@@ -22,13 +22,11 @@ class Ship():
         self.moving_down = False
 
     def center_ship(self):
-
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
     def update(self):
-
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.ship_speed
 
@@ -45,5 +43,4 @@ class Ship():
         self.rect.y = self.y
 
     def blitme(self):
-
         self.screen.blit(self.image, self.rect)

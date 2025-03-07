@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.sprite import Sprite
 
+
 class Alien(Sprite):
 
     def __init__(self, xi_game):
