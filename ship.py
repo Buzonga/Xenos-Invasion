@@ -1,9 +1,12 @@
 import pygame as pg
+from pygame.sprite import Sprite
 
 
-class Ship():
+class Ship(Sprite):
 
     def __init__(self, xi_game):
+        super().__init__()
+
         self.screen = xi_game.screen
         self.settings = xi_game.settings
         self.screen_rect = xi_game.screen.get_rect()
